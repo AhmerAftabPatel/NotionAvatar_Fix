@@ -4,40 +4,22 @@ import { AvatarConfig, AvatarPart } from '@/types';
 
 // TODO: reuse this logic with svg api
 async function getBrowserInstance() {
-  const executablePath = await chromium.executablePath;
-
-  // if (!executablePath) {
-  //   // running locally
-  //   // eslint-disable-next-line
-  //   const puppeteer = require('puppeteer');
-  //   return puppeteer.launch({
-  //     args: chromium.args,
-  //     headless: true,
-  //     defaultViewport: {
-  //       width: 1280,
-  //       height: 720,
-  //     },
-  //     ignoreHTTPSErrors: true,
-  //   });
-  // }
   // eslint-disable-next-line
   const puppeteer = require('puppeteer-core');
+  // eslint-disable-next-line
   const production = process.env.NODE_ENV === 'production';
-  return puppeteer.launch(
+  return await puppeteer.launch(
     production ? {
-    args: chromium.args,
-    defaultViewport: {
-      width: 1280,
-      height: 720,
-    },
-    executablePath,
-    headless: chromium.headless,
-    ignoreHTTPSErrors: true,
-  } : {
-    headless : 'new',
-    // eslint-disable-next-line
-    executablePath : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-  });
+        args: chromium.args,
+        defaultViewport: chromium.defaultViewport,
+        executablePath: await chromium.executablePath,
+        headless: 'new',
+        ignoreHTTPSErrors: true
+    } : {
+        headless: 'new',
+        executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+    }
+);
 }
 
 export default async function handler(
@@ -62,7 +44,6 @@ export default async function handler(
 
   try {
     browser = await getBrowserInstance();
-    console.log(browser, 'browser');
     const page = await browser.newPage();
 
     await page.goto(url);
@@ -79,7 +60,6 @@ export default async function handler(
     });
   } finally {
     if (browser !== null) {
-      console.log(browser, 'browser 2');
       await browser.close();
     }
   }
