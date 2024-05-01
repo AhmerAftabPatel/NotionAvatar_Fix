@@ -22,6 +22,9 @@
     "commit": "cz",
     "svgo": "svgo -f public/icon"
   },
+  "engines": {
+    "node": "^20"
+  },
   "lint-staged": {
     "./src/**/*.{ts,js,jsx,tsx}": [
       "yarn lint --fix",
