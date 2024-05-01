@@ -66,7 +66,7 @@ export default async function handler(
     await page.waitForSelector(`#avatar-preview`); // wait for the selector to load
 
     const element = await page.$(`#avatar-preview`); // declare a variable with an ElementHandle
-    const image = await element.screenshot();
+    const image = await element?.screenshot();
 
     res.writeHead(200, { 'Content-Type': `image/png` }).end(image, `binary`);
   } catch (error: any) {
