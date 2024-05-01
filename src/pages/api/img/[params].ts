@@ -30,7 +30,7 @@ async function getBrowserInstance() {
     executablePath,
     headless: chromium.headless,
     ignoreHTTPSErrors: true,
-    ignoreDefaultArgs: ['--disable-extensions']
+    ignoreDefaultArgs: ['--disable-extensions'],
   });
 }
 
