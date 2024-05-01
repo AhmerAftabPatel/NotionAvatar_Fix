@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import chromium from 'chrome-aws-lambda';
-const puppeteer = require('puppeteer-core');
 import { AvatarConfig, AvatarPart } from '@/types';
-const production = process.env.NODE_ENV === 'production';
 
 // TODO: reuse this logic with svg api
 async function getBrowserInstance() {
@@ -22,8 +20,10 @@ async function getBrowserInstance() {
   //     ignoreHTTPSErrors: true,
   //   });
   // }
-
-  return await puppeteer.launch(
+  // eslint-disable-next-line
+  const puppeteer = require('puppeteer-core');
+  const production = process.env.NODE_ENV === 'production';
+  return puppeteer.launch(
     production ? {
     args: chromium.args,
     defaultViewport: {
@@ -35,6 +35,7 @@ async function getBrowserInstance() {
     ignoreHTTPSErrors: true,
   } : {
     headless : 'new',
+    // eslint-disable-next-line
     executablePath : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   });
 }
