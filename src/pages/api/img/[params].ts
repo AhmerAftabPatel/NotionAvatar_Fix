@@ -8,7 +8,7 @@ async function getBrowserInstance() {
   const puppeteer = require('puppeteer-core');
   // eslint-disable-next-line
   const production = process.env.NODE_ENV === 'production';
-  return await puppeteer.launch(
+  const browser = await puppeteer.launch(
     production ? {
         args: chromium.args,
         defaultViewport: chromium.defaultViewport,
@@ -20,6 +20,7 @@ async function getBrowserInstance() {
         executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
     }
 );
+return browser
 }
 
 export default async function handler(
