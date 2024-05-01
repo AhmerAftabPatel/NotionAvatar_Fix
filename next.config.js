@@ -9,7 +9,7 @@ module.exports = withPWA(
     pwa: {
       dest: 'public',
       runtimeCaching,
-      buildExcludes: [/middleware-manifest\.json$/]
+      buildExcludes: [/middleware-build-manifest\.js$/]
     },
     webpack: config => {
       config.module.rules.push({
