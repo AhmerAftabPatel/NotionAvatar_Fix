@@ -1,27 +1,30 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import chromium from 'chrome-aws-lambda';
+const puppeteer = require('puppeteer-core');
 import { AvatarConfig, AvatarPart } from '@/types';
+const production = process.env.NODE_ENV === 'production';
 
 // TODO: reuse this logic with svg api
 async function getBrowserInstance() {
   const executablePath = await chromium.executablePath;
 
-  if (!executablePath) {
-    // running locally
-    // eslint-disable-next-line
-    const puppeteer = require('puppeteer');
-    return puppeteer.launch({
-      args: chromium.args,
-      headless: true,
-      defaultViewport: {
-        width: 1280,
-        height: 720,
-      },
-      ignoreHTTPSErrors: true,
-    });
-  }
+  // if (!executablePath) {
+  //   // running locally
+  //   // eslint-disable-next-line
+  //   const puppeteer = require('puppeteer');
+  //   return puppeteer.launch({
+  //     args: chromium.args,
+  //     headless: true,
+  //     defaultViewport: {
+  //       width: 1280,
+  //       height: 720,
+  //     },
+  //     ignoreHTTPSErrors: true,
+  //   });
+  // }
 
-  return chromium.puppeteer.launch({
+  return await puppeteer.launch(
+    production ? {
     args: chromium.args,
     defaultViewport: {
       width: 1280,
@@ -30,7 +33,9 @@ async function getBrowserInstance() {
     executablePath,
     headless: chromium.headless,
     ignoreHTTPSErrors: true,
-    ignoreDefaultArgs: ['--disable-extensions'],
+  } : {
+    headless : 'new',
+    executablePath : '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
   });
 }
 
