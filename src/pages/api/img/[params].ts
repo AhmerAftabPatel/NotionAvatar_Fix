@@ -55,7 +55,7 @@ export default async function handler(
 
   try {
     browser = await getBrowserInstance();
-    console.log(browser, 'browser')
+    console.log(browser, 'browser');
     const page = await browser.newPage();
 
     await page.goto(url);
@@ -72,7 +72,7 @@ export default async function handler(
     });
   } finally {
     if (browser !== null) {
-      console.log(browser, 'browser 2')
+      console.log(browser, 'browser 2');
       await browser.close();
     }
   }
