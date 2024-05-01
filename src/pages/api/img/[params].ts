@@ -4,23 +4,25 @@ import { AvatarConfig, AvatarPart } from '@/types';
 
 // TODO: reuse this logic with svg api
 async function getBrowserInstance() {
-  const executablePath = await chromium.executablePath;
+  const executablePath =  process.env.NODE_ENV === "production"
+          ? await chromium.executablePath
+          : "/usr/local/bin/chromium";
 
-  if (!executablePath) {
-    // running locally
-    // eslint-disable-next-line
-    const puppeteer = require('puppeteer');
-    return puppeteer.launch({
-      args: chromium.args,
-      headless: true,
-      defaultViewport: {
-        width: 1280,
-        height: 720,
-      },
-      ignoreHTTPSErrors: true,
-      ignoreDefaultArgs: ['--disable-extensions']
-    });
-  }
+  // if (!executablePath) {
+  //   // running locally
+  //   // eslint-disable-next-line
+  //   const puppeteer = require('puppeteer');
+  //   return puppeteer.launch({
+  //     args: chromium.args,
+  //     headless: true,
+  //     defaultViewport: {
+  //       width: 1280,
+  //       height: 720,
+  //     },
+  //     ignoreHTTPSErrors: true,
+  //     ignoreDefaultArgs: ['--disable-extensions']
+  //   });
+  // }
 
   return chromium.puppeteer.launch({
     args: chromium.args,
@@ -29,7 +31,7 @@ async function getBrowserInstance() {
       height: 720,
     },
     executablePath,
-    headless: chromium.headless,
+    headless: process.env.NODE_ENV === "production" ? chromium.headless : true,
     ignoreHTTPSErrors: true,
     ignoreDefaultArgs: ['--disable-extensions']
   });
@@ -68,6 +70,7 @@ export default async function handler(
 
     res.writeHead(200, { 'Content-Type': `image/png` }).end(image, `binary`);
   } catch (error: any) {
+    console.log(error);
     res.json({
       status: `error`,
       data: error?.message || `Something went wrong`,
